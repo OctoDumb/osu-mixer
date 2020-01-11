@@ -1,0 +1,23 @@
+{
+  "name": "osu-mixer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "styles": "sass assets/css/main.scss:assets/css/main.css",
+    "stylesRT": "sass assets/css/main.scss:assets/css/main.css --watch",
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^7.1.3",
+    "osudb": "^2.0.0",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
+    "electron-builder": "^21.2.0"
+  },
+  "description": ""
+}

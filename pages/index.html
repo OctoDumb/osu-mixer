@@ -1,0 +1,345 @@
+<html>
+    <head>
+        <title>osu! mixer</title>
+        <script src="../assets/js/vue/vue.js"></script>
+        <link rel="stylesheet" href="../assets/FA/css/all.min.css">
+        <link rel="stylesheet" href="../assets/css/main.css">
+        <link rel="stylesheet" href="../assets/css/normolize.css">
+    </head>
+    <body>
+        <div class="window-control">
+            <div class="window-control-drag" style="-webkit-app-region: drag"></div>
+            <div class="window-control-btns" id="window-frame">
+                <i class="far fa-window-minimize" v-on:click="minimize()"></i>
+                <i class="far fa-square" v-on:click="maximize()"></i>
+                <i class="fa fa-times" aria-hidden="true" v-on:click="close()"></i>
+            </div>
+        </div>
+
+        <div id="menu">
+            <div class="preloader">
+                <div class="menu-logo">
+                    <img src="../assets/logo.png" alt="logo">
+                </div>
+                <h4>{{ title }}</h4>
+                <div class="menu-progress-bar">
+                    <div id="menu-progress-bar-inner" :style="{ width: `${progress}%` }"></div>
+                </div> 
+                <div id="menu-progress-text">{{ progress.toFixed(2) }}%</div>
+                <h6>This process might take a while, please be patient...</h6>
+            </div>
+            <div class="creators-container">
+                <div class="creator">
+                    <i class="fas fa-code creator-icon"></i>
+                    <div class="creator-title">OctopuSSX</div>
+                </div>
+                <div class="creator">
+                    <i class="fas fa-paint-brush creator-icon"></i>
+                    <div class="creator-title">TheEZIC</div>
+                </div>
+                <div class="creator">
+                    <i class="fas fa-image creator-icon"></i>
+                    <div class="creator-title">saffracing</div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="main-menu-container">
+            <div class="main-menu">
+                <nav class="main-menu-nav">
+                    <div class="menu-logo">
+                        <img src="../assets/logo.png" alt="logo">
+                    </div>
+                    <ol class="nav">
+                        <li><i class="fa fa-music" aria-hidden="true"></i><span>Playlists</span></li>
+                        <li><i class="fa fa-cogs" aria-hidden="true"></i><span>Settings</span></li>
+                    </ol>
+                </nav>
+                <i class=" main-menu-btn fa fa-bars" aria-hidden="true"></i>
+                
+            </div>
+            <div class="main-menu-content">
+                <div class="main-menu-item">HUY</div>
+                <div class="main-menu-item settings">
+                    <div class="settings-container">
+
+
+
+                        <div class="settings-item">
+                            <label>
+                                <input class="checkbox" type="checkbox" name="discord" id="">
+                                <div class="checkbox-container">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </div>
+                            </label>
+                            <span>Enable Discord RPC</span>
+                        </div>
+                        <div class="settings-item">
+                            <label>
+                                <input class="checkbox" type="checkbox" name="visualizer" id="">
+                                <div class="checkbox-container">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </div>
+                            </label>
+                            <span>Enable visualizer</span>
+                        </div>
+                        <div class="settings-item">
+                            <label>
+                                <input class="checkbox" type="checkbox" name="parallax" id="">
+                                <div class="checkbox-container">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </div>
+                            </label>
+                            <span>Enable parallax</span>
+                        </div>
+                    </div>
+
+
+
+                    <div id="shortcuts" class="shortcut">
+                        <div class="shortcut-tittle">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            <span>Add shortcut</span>
+                        </div>
+                        <div class="shortcut-settings">
+                            <div v-for="(s, i) in settings.shortcuts" class="shortcut-settings-item">
+                                <div class="shortcut-settings-item-btns">{{ s.keys.map(k => capitalize(k)).join(" + ") }}</div>
+                                <div class="shortcut-settings-item-title">{{ settings.getActionName(s.action) }}</div>   
+                            </div>
+                            <!-- <div class="shortcut-settings-item"></div>
+                            <div class="shortcut-settings-item"></div> -->
+                        </div>
+                    </div>
+
+
+
+                    <div class="clear-btn">Clear database</div>
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <canvas class="parallax-bg" id="parallax"></canvas>
+
+
+
+        <div class="search-container">
+            <div class="search-icon-container">
+                <i class="fa fa-search search-icon" aria-hidden="true"></i>
+            </div>
+            <input id="searchInput" placeholder="Search">
+        </div>
+        
+        
+
+        <div class="visualizer-container">
+            <canvas class="visualizer"></canvas>
+            <i class="fa fa-angle-up" aria-hidden="true"></i>
+        </div>
+
+
+
+        <div class="player-container">
+            <div id="player">
+                <div class="player-control">
+                    <i class="fas fa-backward" v-on:click="prev()"></i>
+                    <div class="play-btn" v-on:click="playpause()">
+                        <i v-if="playing <= 0" class="fas fa-play"></i>
+                        <i v-if="playing > 0" class="fas fa-pause"></i>
+                    </div>
+                    <i class="fas fa-forward" v-on:click="next()"></i>
+                </div>
+                <div class="player-main">
+                    <div class="song-information">
+                        <div class="song-information-title">{{ title }}</div>
+                        <div class="song-information-time">{{ time }}</div>
+                    </div>
+                    
+                    <div class="progress-bar-container">
+                        <div id="progress-bar">
+                            <div class="progress-inner" :style="{ width: `${progress}%` }"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="player-btn">
+                    <i class="player-btn-item fas fa-random" v-on:click="shuffle()" aria-hidden="true"></i>
+                    <div class="PlayerDivider2"></div>
+                    <i class="player-btn-item fas fa-redo-alt" v-on:click="switchRepeat()"></i>
+                    <div class="PlayerDivider2"></div>
+                    <i class="player-btn-item" v-on:click="switchSpeed()">{{ speed }}x</i>
+                </div>
+            </div>
+
+
+
+            <div class="song-list">
+                <div id="playlist">
+                    <div class="song" v-for="(song, i) in songs" v-bind:key="song.id" v-if="i < shown">
+                        <div class="song-bg" :style="{ background: `linear-gradient(0deg, #0009, #0009), url('${encodeURI('file:///' + song.bg)}') center center / cover` }"></div>
+                        <div class="play-btn" v-on:click="play(song.id)">
+                            <i v-if="getPlaying() != song.id" class="fas fa-play"></i>
+                            <i v-if="getPlaying() == song.id" class="fas fa-pause"></i>
+                        </div>
+                        <i class="song-title">{{ song.artist }} - {{ song.title }}</i>
+                        <i class="fas fa-bars" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </body>
+    <script src="./index.js"></script>
+    <script src="../assets/js/anime.min.js"></script>
+
+    <script>
+        window.onload = function() {
+
+            let visualizer = document.querySelectorAll('.visualizer')[0],
+                icon       = document.querySelectorAll('.fa-angle-up')[0],
+                visualizerContainer = document.querySelectorAll('.visualizer-container')[0],
+                mainMenuBtn = document.querySelectorAll('.main-menu-btn')[0];
+
+
+            visualizer.addEventListener('mouseenter', function (e) {
+                icon.style.display = 'block';
+                
+                icon.style.transform = 'translateY(-40px)';
+                console.log('навелись на контейнер');
+            })
+
+            visualizer.addEventListener('mouseleave', function (e) {
+                console.log('ушли с контейнера');
+                icon.style.display = 'none';
+            })
+
+            icon.addEventListener('mouseenter', function (e) {
+                console.log('навелись на иконку');
+                icon.style.transform = 'translateY(-40px)';
+                icon.style.display = 'block';
+            })
+            
+            icon.addEventListener('mouseleave', function (e) {
+                console.log('ушли с иконки');
+                icon.style.transform = 'translateY(-40px)';
+                icon.style.display = 'none';
+            })
+
+            icon.addEventListener('mousedown', function (e) {
+                if (document.querySelectorAll('.song-list')[0].style.display == 'none') {
+                    document.querySelectorAll('.search-container')[0].style.display = 'flex';
+                    visualizerContainer.style.bottom = '440px';
+                    document.querySelectorAll('.song-list')[0].style.display = 'block';
+                } else {
+                    document.querySelectorAll('.search-container')[0].style.display = 'none';
+                    visualizerContainer.style.bottom = '49px';
+                    document.querySelectorAll('.song-list')[0].style.display = 'none';
+                }
+                
+            })
+
+            visualizer.addEventListener('mousedown', function (e) {
+                document.querySelectorAll('.search-container')[0].style.display = 'none';
+                document.querySelectorAll('.song-list')[0].style.display = 'none';
+                visualizerContainer.style.bottom = '49px';
+            })
+
+
+            let MenuBtnAnimationReady = true;
+
+            let mainMenuBtnSwitcher = false;
+
+            mainMenuBtn.addEventListener('mousedown', function (e) {
+                if (MenuBtnAnimationReady == true) {
+                    MenuBtnAnimationReady = false;
+
+                    console.log(MenuBtnAnimationReady);
+                    if (!mainMenuBtnSwitcher){
+                        anime({
+                            targets: mainMenuBtn,
+                            right: '-20%'
+                        })
+                        document.querySelectorAll('.main-menu-nav')[0].style.display = 'block';
+                        mainMenuBtnSwitcher = true 
+                    } else {
+                        anime({
+                            targets: mainMenuBtn,
+                            right: '80%',
+                            easing: 'easeInOutQuad',
+                            duration: 400 
+                        })
+                        document.querySelectorAll('.main-menu-nav')[0].style.display = 'none';
+                        mainMenuBtnSwitcher = false;
+                    }
+                    
+                    setTimeout(function () {
+                        MenuBtnAnimationReady = true;
+                        console.log(MenuBtnAnimationReady);
+                    }, 700);
+                }
+            })
+
+
+            let nav = document.querySelectorAll('.nav li');
+            let menuItem = document.querySelectorAll('.main-menu-item');
+            let menuContent = document.querySelectorAll('.main-menu-content')[0];
+            let menuIsClicked = false;
+            let itemIsDisplayed = -1;
+
+            /* menuContent.addEventListener('mouseleave', function() {
+                itemIsDisplayed = -1;
+                menuItem.forEach(function(item2, j) {  
+                    item2.style.display = 'none';
+                })
+                menuContent.style.display  = 'none';
+            }) */
+
+            nav.forEach(function(item, i) {
+                item.addEventListener('mousedown', function() {
+                    menuItem.forEach(function(item2, j) {
+                        if (item2.style.display == 'flex') {
+                            itemIsDisplayed = j;
+                        }
+                        item2.style.display = 'none';
+                    })
+
+                    if (i == itemIsDisplayed) {
+                        menuContent.style.display  = 'none';
+                        menuItem[i].style.display  = 'none';
+                        itemIsDisplayed = -1
+                    } else {
+                        menuContent.style.display  = 'flex';
+                        menuItem[i].style.display  = 'flex';
+                        itemIsDisplayed = -1
+                    }
+                })             
+            })
+
+            
+
+            
+            
+
+
+
+            let checkbox = document.querySelectorAll('.checkbox'),
+                checkboxCheck = document.querySelectorAll('.fa-check');
+
+            checkbox.forEach(function(item, i) {
+                item.addEventListener('change', function() {
+                    if (item.checked) {
+                        checkboxCheck[i].style.display = 'block';
+                    } else {
+                        checkboxCheck[i].style.display = 'none';
+                    }
+                })
+            })
+            
+
+            
+            
+        }
+    </script>
+</html>
