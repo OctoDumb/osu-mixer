@@ -8,7 +8,12 @@
     </head>
     <body>
         <div class="window-control">
-            <div class="window-control-drag" style="-webkit-app-region: drag"></div>
+            <div class="window-control-drag" style="-webkit-app-region: drag">
+                <div class="mini-logo-container">
+                    <img src="../assets/osu-mixer-logo.png" alt="icon" class="mini-logo">
+                </div>
+            </div>
+            <span class="app-title">osu! mixer</span>
             <div class="window-control-btns" id="window-frame">
                 <i class="far fa-window-minimize" v-on:click="minimize()"></i>
                 <i class="far fa-square" v-on:click="maximize()"></i>
@@ -16,13 +21,15 @@
             </div>
         </div>
 
-        <div class="path">
+        <div id="path" class="path">
             <div class="path container"></div>
+            <h4>Choose your osu! folder</h4>
             <div class="path-input">
                 <input type="text" class="path-text" placeholder="osu! path" id="" disabled>
                 <div class="path-btn">Choose</div>
             </div>
             <button class="confirm-btn">Confirm</button>
+            <h5>Error</h5>
         </div>
 
         <div id="menu">
@@ -108,7 +115,7 @@
 
 
                     <div id="shortcuts" class="shortcut">
-                        <div class="shortcut-tittle">
+                        <div class="shortcut-title">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             <span>Add shortcut</span>
                         </div>
@@ -184,17 +191,15 @@
 
 
 
-            <div class="song-list">
-                <div id="playlist">
-                    <div class="song" v-for="(song, i) in songs" v-bind:key="song.id" v-if="i < shown">
-                        <div class="song-bg" :style="{ background: `linear-gradient(0deg, #0009, #0009), url('${encodeURI('file:///' + song.bg)}') center center / cover` }"></div>
-                        <div class="play-btn" v-on:click="play(song.id)">
-                            <i v-if="getPlaying() != song.id" class="fas fa-play"></i>
-                            <i v-if="getPlaying() == song.id" class="fas fa-pause"></i>
-                        </div>
-                        <i class="song-title">{{ song.artist }} - {{ song.title }}</i>
-                        <i class="fas fa-bars" aria-hidden="true"></i>
+            <div class="song-list" id="playlist">
+                <div class="song" v-for="(song, i) in songs" v-bind:key="song.id" v-if="i < shown">
+                    <div class="song-bg" :style="{ background: `linear-gradient(0deg, #0009, #0009), url('${encodeURI('file:///' + song.bg)}') center center / cover` }"></div>
+                    <div class="play-btn" v-on:click="play(song.id)">
+                        <i v-if="getPlaying() != song.id" class="fas fa-play"></i>
+                        <i v-if="getPlaying() == song.id" class="fas fa-pause"></i>
                     </div>
+                    <i class="song-title">{{ song.artist }} - {{ song.title }}</i>
+                    <i class="fas fa-bars" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -209,30 +214,25 @@
             let visualizer = document.querySelectorAll('.visualizer')[0],
                 icon       = document.querySelectorAll('.fa-angle-up')[0],
                 visualizerContainer = document.querySelectorAll('.visualizer-container')[0],
+                mainMenu = document.querySelectorAll('.main-menu')[0],
                 mainMenuBtn = document.querySelectorAll('.main-menu-btn')[0];
 
 
-            visualizer.addEventListener('mouseenter', function (e) {
+            visualizerContainer.addEventListener('mouseover', function (e) {
                 icon.style.display = 'block';
-                
-                icon.style.transform = 'translateY(-40px)';
-                console.log('навелись на контейнер');
+                visualizer.style.opacity = '0.3';
+                anime({
+                    targets: icon,
+                    translateY: -40
+                })
             })
 
-            visualizer.addEventListener('mouseleave', function (e) {
-                console.log('ушли с контейнера');
-                icon.style.display = 'none';
-            })
-
-            icon.addEventListener('mouseenter', function (e) {
-                console.log('навелись на иконку');
-                icon.style.transform = 'translateY(-40px)';
-                icon.style.display = 'block';
-            })
-            
-            icon.addEventListener('mouseleave', function (e) {
-                console.log('ушли с иконки');
-                icon.style.transform = 'translateY(-40px)';
+            visualizerContainer.addEventListener('mouseout', function (e) {
+                visualizer.style.opacity = '1';
+                anime({
+                    targets: icon,
+                    translateY: 0
+                })
                 icon.style.display = 'none';
             })
 
@@ -240,7 +240,8 @@
                 if (document.querySelectorAll('.song-list')[0].style.display == 'none') {
                     document.querySelectorAll('.search-container')[0].style.display = 'flex';
                     visualizerContainer.style.bottom = '440px';
-                    document.querySelectorAll('.song-list')[0].style.display = 'block';
+
+                    document.querySelectorAll('.song-list')[0].style.display = 'flex';
                 } else {
                     document.querySelectorAll('.search-container')[0].style.display = 'none';
                     visualizerContainer.style.bottom = '49px';
@@ -271,6 +272,7 @@
                             right: '-20%'
                         })
                         document.querySelectorAll('.main-menu-nav')[0].style.display = 'block';
+                        document.querySelectorAll('.main-menu')[0].style.zIndex = '9';
                         mainMenuBtnSwitcher = true 
                     } else {
                         anime({
@@ -280,6 +282,7 @@
                             duration: 400 
                         })
                         document.querySelectorAll('.main-menu-nav')[0].style.display = 'none';
+                        document.querySelectorAll('.main-menu')[0].style.zIndex = '0';
                         mainMenuBtnSwitcher = false;
                     }
                     
