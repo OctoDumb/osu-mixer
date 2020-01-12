@@ -5,7 +5,8 @@ var { remote } = require('electron'),
     Parallax = require('./parallax'),
     Visualizer = require('./visualizer'),
     PlaylistManager = require('./playlists'),
-    Settings = require('./settings'); // vars.player.playlist
+    Settings = require('./settings'),
+    fs = require('fs');
 
 var db = new Database(remote.app.getPath("userData") + "\\database.db");
 
@@ -13,6 +14,14 @@ db.run("CREATE TABLE IF NOT EXISTS songs (id INTEGER, artist TEXT, title TEXT, f
 
 var audio = new Audio();
 audio.volume = 0.1;
+
+var pathInput = new Vue({
+    el: "#path",
+    data: {
+        path: "",
+        error: ""
+    }
+});
 
 var frame = new Vue({
     el: "#window-frame",
@@ -217,7 +226,7 @@ var background = new Parallax(document.getElementById("parallax"));
 
 var Playlists = new PlaylistManager(db, "playlists.json");
 
-(async function(path) {
+async function load(path) {
     background.resize();
     visualizer.resize();
     console.log("Initializing manager");
@@ -238,8 +247,46 @@ var Playlists = new PlaylistManager(db, "playlists.json");
         }
         playlist.shown = 50;
     });
-})("F:/osu!");
+}
+
+if(fs.existsSync(`${remote.app.getPath("userData")}\\osupath.txt`)) {
+    pathInput.$el.style.display = "none";
+    let path = fs.readFileSync(`${remote.app.getPath("userData")}\\osupath.txt`);
+    load(path);
+} else {
+    document.querySelector(".path-btn").addEventListener("click", () => {
+        let p = remote.dialog.showOpenDialogSync({
+            title: 'Choose your osu! folder',
+            properties: ['openDirectory']
+        });
+
+        if(!p) return;
+
+        pathInput.path = p[0].replace(/\\/g, '/');
+    });
+    
+    document.querySelector(".confirm-btn").addEventListener("click", () => {
+        let path = pathInput.path;
+        console.log(path);
+        if(!path[0]) {
+            pathInput.error = "Choose osu! folder first!";
+            return;
+        }
+        if(!fs.existsSync(path)) {
+            pathInput.error = "This folder does not exist!";
+            return;
+        }
+        if(!fs.existsSync(path + "/osu!.db") || !fs.existsSync(path + "/Songs")) {
+            pathInput.error = "This is not your osu! folder!";
+            return;
+        }
+
+        fs.writeFileSync(`${remote.app.getPath("userData")}\\osupath.txt`, pathInput.path);
+        pathInput.$el.style.display = "none";
+        load(pathInput.path);
+    });
+}
 
 module.exports = {
     db, audio, menu, playlist, player, visualizer, search, bar, background, Playlists, settings
-}; // https://github.com/OctoDumb/osu-Direct/blob/master/default-bg.png
+};

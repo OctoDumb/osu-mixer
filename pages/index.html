@@ -25,11 +25,11 @@
             <div class="path container"></div>
             <h4>Choose your osu! folder</h4>
             <div class="path-input">
-                <input type="text" class="path-text" placeholder="osu! path" id="" disabled>
+                <input type="text" class="path-text" placeholder="osu! path" :value="path" disabled>
                 <div class="path-btn">Choose</div>
             </div>
             <button class="confirm-btn">Confirm</button>
-            <h5>Error</h5>
+            <h5>{{ error }}</h5>
         </div>
 
         <div id="menu">
