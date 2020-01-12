@@ -201,6 +201,8 @@ var search = new Search(document.getElementById("searchInput"), 400);
 
 var bar = new ProgressBar(document.getElementById("progress-bar"));
 
+var volumeBar = new ProgressBar(document.getElementById("volume"));
+
 bar.on('start', () => {
     if(player.playing == 0)
         return;

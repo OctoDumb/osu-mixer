@@ -177,12 +177,20 @@
                     </div>
                     
                     <div class="progress-bar-container">
-                        <div id="progress-bar">
+                        <div id="progress-bar" class="progress-bar">
                             <div class="progress-inner" :style="{ width: `${progress}%` }"></div>
                         </div>
                     </div>
                 </div>
                 <div class="player-btn">
+                    <i class="player-btn-item fas fa-volume-up" v-on:click="shuffle()" aria-hidden="true">
+                        <div class="volume-container">
+                            <div id="volume" class="progress-bar">
+                                <div class="progress-inner"></div>
+                            </div>
+                        </div>
+                    </i>
+                    <div class="PlayerDivider2"></div>
                     <i class="player-btn-item fas fa-random" v-on:click="shuffle()" aria-hidden="true"></i>
                     <div class="PlayerDivider2"></div>
                     <i class="player-btn-item fas fa-redo-alt" v-on:click="switchRepeat()"></i>
