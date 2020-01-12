@@ -118,11 +118,13 @@
                         <div class="shortcut-title">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             <span>Add shortcut</span>
+                            <i class="fa fa-minus" aria-hidden="true"></i>
                         </div>
                         <div class="shortcut-settings">
                             <div v-for="(s, i) in settings.shortcuts" class="shortcut-settings-item">
                                 <div class="shortcut-settings-item-btns">{{ s.keys.map(k => capitalize(k)).join(" + ") }}</div>
-                                <div class="shortcut-settings-item-title">{{ settings.getActionName(s.action) }}</div>   
+                                <div class="shortcut-settings-item-title">{{ settings.getActionName(s.action) }}</div>
+                                <i class="fas fa-trash"></i> 
                             </div>
                             <!-- <div class="shortcut-settings-item"></div>
                             <div class="shortcut-settings-item"></div> -->
