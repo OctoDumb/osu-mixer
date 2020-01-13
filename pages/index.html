@@ -195,7 +195,7 @@
                     <div class="PlayerDivider2"></div>
                     <i class="player-btn-item fas fa-redo-alt" v-on:click="switchRepeat()"></i>
                     <div class="PlayerDivider2"></div>
-                    <i class="player-btn-item" v-on:click="switchSpeed()">{{ speed }}x</i>
+                    <i class="player-btn-item" v-on:click="switchSpeed()">{{ speed.toFixed(1) }}x</i>
                 </div>
             </div>
 

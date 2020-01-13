@@ -23,7 +23,7 @@ app.on('ready', () => {
         minWidth: 1000,
         minHeight: 700,
         title: "osu! mixer",
-        icon: "assets/osu-mixer-logo.png",
+        icon: "assets/osu-mixer-logo.ico",
         show: false,
         webPreferences: {
             nodeIntegration: true

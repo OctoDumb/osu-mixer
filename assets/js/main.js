@@ -140,10 +140,10 @@ var player = new Vue({
                 return audio.play();
             this.next();
         },
-        shuffle() {
+        /* shuffle() {
             let rndSort = () => Math.random() * 2 - 1;
             this.playlist = this.playlist.sort(rndSort);
-        },
+        }, */
         formatTime(seconds) {
             seconds = Math.floor(seconds);
             let f = (n) => n < 10 ? `0${n}` : `${n}`;
@@ -152,7 +152,7 @@ var player = new Vue({
         getTime() {
             if(!isFinite(audio.duration))
                 return `-:--/-:--`;
-            return `${this.formatTime(audio.currentTime)}/${this.formatTime(audio.duration)}`
+            return `${this.formatTime(audio.currentTime / this.speed) }/${this.formatTime(audio.duration / this.speed)}`
         },
         getProgress() {
             if(!isFinite(audio.duration))
@@ -164,7 +164,13 @@ var player = new Vue({
             this.progress = this.getProgress();
         },
         switchSpeed() {
-            this.speed = this.speed == 1 ? 1.5 : 1;
+            if (this.speed >= 1.5) {
+                this.speed = 1.0;
+            }
+            else {
+                this.speed += 0.1;
+            }
+            /* this.speed = this.speed == 1 ? 1.5 : 1; */
             audio.defaultPlaybackRate = this.speed;
             audio.playbackRate = this.speed;
         },
@@ -222,6 +228,15 @@ bar.on('stop', () => {
         return;
     if(player.playing > 0)
         audio.play();
+});
+
+volumeBar.on('start', () => {
+    document.getElementsByClassName("progress-inner")[1].style.height = `${pos.y}%`;
+});
+
+volumeBar.on('move', (pos) => {
+    audio.volume = -(pos.y / 100);
+    document.getElementsByClassName("progress-inner")[1].style.height = `${Math.abs(pos.y)}%`;
 });
 
 var background = new Parallax(document.getElementById("parallax"));
