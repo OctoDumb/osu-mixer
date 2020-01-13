@@ -140,10 +140,10 @@ var player = new Vue({
                 return audio.play();
             this.next();
         },
-        /* shuffle() {
+        shuffle() {
             let rndSort = () => Math.random() * 2 - 1;
             this.playlist = this.playlist.sort(rndSort);
-        }, */
+        },
         formatTime(seconds) {
             seconds = Math.floor(seconds);
             let f = (n) => n < 10 ? `0${n}` : `${n}`;
@@ -230,13 +230,16 @@ bar.on('stop', () => {
         audio.play();
 });
 
-volumeBar.on('start', () => {
+/* volumeBar.on('start', () => {
     document.getElementsByClassName("progress-inner")[1].style.height = `${pos.y}%`;
-});
+}); */
+
+document.getElementsByClassName("progress-inner")[1].style.height = `${audio.volume}%`
 
 volumeBar.on('move', (pos) => {
-    audio.volume = -(pos.y / 100);
-    document.getElementsByClassName("progress-inner")[1].style.height = `${Math.abs(pos.y)}%`;
+    audio.volume = (100 - Math.abs(pos.y)) / 100;
+    console.log(pos.y);
+    document.getElementsByClassName("progress-inner")[1].style.height = `${100 - Math.abs(pos.y)}%`;
 });
 
 var background = new Parallax(document.getElementById("parallax"));

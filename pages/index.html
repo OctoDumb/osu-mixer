@@ -16,7 +16,8 @@
             <span class="app-title">osu! mixer</span>
             <div class="window-control-btns" id="window-frame">
                 <i class="far fa-window-minimize" v-on:click="minimize()"></i>
-                <i class="far fa-square" v-on:click="maximize()"></i>
+                <i class="far fa-window-restore" v-on:click="maximize()"></i>
+                <!-- <i class="far fa-square" v-on:click="maximize()"></i> -->
                 <i class="fa fa-times" aria-hidden="true" v-on:click="close()"></i>
             </div>
         </div>
@@ -183,7 +184,7 @@
                     </div>
                 </div>
                 <div class="player-btn">
-                    <i class="player-btn-item fas fa-volume-up" v-on:click="shuffle()" aria-hidden="true">
+                    <i class="player-btn-item fas fa-volume-up" aria-hidden="true">
                         <div class="volume-container">
                             <div id="volume" class="progress-bar">
                                 <div class="progress-inner"></div>

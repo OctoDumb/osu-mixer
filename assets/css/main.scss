@@ -821,6 +821,14 @@ body {
             font-size: 0.9rem;
         }
     }
+    .progress-inner {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 6px;
+        border-radius: 3px;
+        background: #ddd;
+    }
 }
 
 .player-btn {
@@ -852,11 +860,18 @@ body {
                 position: absolute;
                 top: 50%;
                 left: 50%;
+                display: flex;
+                align-items: flex-end;
                 transform: translate(-50%, -50%)  /* rotate(180deg) */;
             }
             .progress-inner {
+                position: absolute;
+                bottom: 0;
+                left: 0;
                 width: 6px;
                 height: 0;
+                background: white;
+                border-radius: 3px;
             }
         }
     }
@@ -900,14 +915,7 @@ body {
     align-items: center;
 }
 
-.progress-inner {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 6px;
-    border-radius: 3px;
-    background: #ddd;
-}
+
 
 .visualizer{
     width: 100%;
@@ -933,6 +941,7 @@ body {
     display: none;
     flex-wrap: wrap;
     justify-content: center;
+    align-content: flex-start;
     &::-webkit-scrollbar-button {
         background-image:url('');
         background-repeat:no-repeat;
