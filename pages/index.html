@@ -117,9 +117,8 @@
 
                     <div id="shortcuts" class="shortcut">
                         <div class="shortcut-title">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            <i class="fa fa-plus" aria-hidden="true" id="add-shortcut"></i>
                             <span>Add shortcut</span>
-                            <i class="fa fa-minus" aria-hidden="true"></i>
                         </div>
                         <div class="shortcut-settings">
                             <div v-for="(s, i) in settings.shortcuts" class="shortcut-settings-item">
@@ -127,8 +126,6 @@
                                 <div class="shortcut-settings-item-title">{{ settings.getActionName(s.action) }}</div>
                                 <i class="fas fa-trash"></i> 
                             </div>
-                            <!-- <div class="shortcut-settings-item"></div>
-                            <div class="shortcut-settings-item"></div> -->
                         </div>
                     </div>
 
@@ -138,9 +135,20 @@
                 </div>
             </div>
         </div>
-        
 
-        
+
+
+        <div class="shortcut-popup-container">
+            <div class="shortcut-popup">
+                <i class="fa fa-times" aria-hidden="true" id="shortcut-popup-close"></i>
+                <h4>Lorem ipsum dolor sit.</h4>
+                <input type="text" class="shortcut-popup-text">
+                <button class="confirm-btn">Confirm</button>
+            </div>
+        </div>
+
+
+
         <canvas class="parallax-bg" id="parallax"></canvas>
 
 
@@ -226,7 +234,28 @@
                 icon       = document.querySelectorAll('.fa-angle-up')[0],
                 visualizerContainer = document.querySelectorAll('.visualizer-container')[0],
                 mainMenu = document.querySelectorAll('.main-menu')[0],
+                shortcutPopupCloseBtn = document.querySelectorAll('#shortcut-popup-close')[0],
+                shortcutPopupContainer = document.querySelectorAll('.shortcut-popup-container')[0],
+                addShortcutBtn = document.querySelectorAll('#add-shortcut')[0],
                 mainMenuBtn = document.querySelectorAll('.main-menu-btn')[0];
+
+
+
+            addShortcutBtn.addEventListener('mousedown', function () {
+                shortcutPopupContainer.style.display = 'flex';
+            })
+            
+            shortcutPopupCloseBtn.addEventListener('mousedown', function () {
+                shortcutPopupContainer.style.display = 'none';
+            })
+
+            shortcutPopupContainer.addEventListener('mousedown', function (e) {
+                if (e.target.classList.contains('shortcut-popup-container')) {
+                    e.target.style.display = 'none';
+                }               
+            })
+
+
 
             icon.addEventListener('mousedown', function (e) {
                 if (document.querySelectorAll('.song-list')[0].style.display == 'none') {
@@ -321,10 +350,10 @@
                 })             
             })
 
+            
 
-
-
-
+            
+            
 
 
 

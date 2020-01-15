@@ -79,6 +79,7 @@ body {
         width: 100%;
         display: flex;
         height: em(30);
+
     }
 
         
@@ -107,6 +108,7 @@ body {
             font-family: 'Exo 2 Thin', sans-serif;
             font-size: em(25);
             i {
+                cursor: pointer;
                 width: 20%;
             }
             span {
@@ -192,6 +194,7 @@ body {
                     top: 10px;
                     right: 10px;
                     font-size: 20px;
+                    cursor: pointer;
                 }
             }
         }
@@ -207,6 +210,7 @@ body {
     label {
         display: flex;
         margin-right: em(20);
+        cursor: pointer;
     }
     label input {
         display: none;
@@ -469,26 +473,28 @@ body {
         border-left: 2px solid black;
         cursor: pointer;
     }
-    .confirm-btn {
-        margin-top: em(30);
-        width: em(120);
-        height: em(40);
-        outline: 0;
-        color: #28a745;
-        border: 1px solid #28a745;
-        padding: 0;
-        border-radius: 13px;
-        background: $color3;
-        font-size: em(15);
-        &:hover {
-            background: #28a745;
-            color: white;
-            transition: all .3s ease-in-out;
-        }
-        &:active {
-            border-bottom: 3px solid darken(#28a745, 20%);
-            transition: none;
-        }
+}
+
+.confirm-btn {
+    margin-top: em(30);
+    width: em(120);
+    height: em(40);
+    outline: 0;
+    color: #28a745;
+    border: 1px solid #28a745;
+    padding: 0;
+    border-radius: 13px;
+    background: $color3;
+    font-size: em(15);
+    cursor: pointer;
+    &:hover {
+        background: #28a745;
+        color: white;
+        transition: all .3s ease-in-out;
+    }
+    &:active {
+        border-bottom: 3px solid darken(#28a745, 20%);
+        transition: none;
     }
 }
 
@@ -926,8 +932,8 @@ body {
     transition: opacity .3s ease-in-out;
 }
 .visualizer-container:hover > .fa-angle-up {
-    transform: translate(-50%, calc(-50% - 40px));
-    opacity: 1;
+    transform: translate(-50%, calc(-50% - 20px));
+    opacity: 1;     
 }
 
 .visualizer-container:hover > .visualizer {
@@ -1040,6 +1046,60 @@ body {
                 cursor: pointer;
                 background: $color2;
             }
+        }
+    }
+}
+
+.shortcut-popup-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,.7);
+    z-index: 99;
+    display: none;
+    .shortcut-popup {
+        width: em(300);
+        height: em(200);
+        background: $color3;
+        position: relative;
+        border-radius: 13px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        user-select: none;
+        i {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: em(15);
+            color: white;
+            cursor: pointer;
+        }
+        h4 {
+            margin: 0;
+            margin-bottom: em(10);
+            color: white;
+            font-size: em(24);
+            font-family: 'Exo 2', sans-serif;
+        }
+        &-text {
+            width: 200px;
+            height: 30px;
+            border: 0;
+            padding: 0;
+            background: $color2;
+            border-radius: 8px;
+            color: white;
+            padding-left: 10px;
+            outline: 0;
+        }
+        .confirm-btn {
+            margin-top: em(13);
         }
     }
 }
