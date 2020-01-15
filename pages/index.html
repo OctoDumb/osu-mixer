@@ -228,25 +228,6 @@
                 mainMenu = document.querySelectorAll('.main-menu')[0],
                 mainMenuBtn = document.querySelectorAll('.main-menu-btn')[0];
 
-
-            visualizerContainer.addEventListener('mouseover', function (e) {
-                icon.style.display = 'block';
-                visualizer.style.opacity = '0.3';
-                anime({
-                    targets: icon,
-                    translateY: -40
-                })
-            })
-
-            visualizerContainer.addEventListener('mouseout', function (e) {
-                visualizer.style.opacity = '1';
-                anime({
-                    targets: icon,
-                    translateY: 0
-                })
-                icon.style.display = 'none';
-            })
-
             icon.addEventListener('mousedown', function (e) {
                 if (document.querySelectorAll('.song-list')[0].style.display == 'none') {
                     document.querySelectorAll('.search-container')[0].style.display = 'flex';
@@ -340,10 +321,10 @@
                 })             
             })
 
-            
 
-            
-            
+
+
+
 
 
 
