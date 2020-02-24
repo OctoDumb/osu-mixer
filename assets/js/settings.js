@@ -1,4 +1,5 @@
-var { ipcRenderer: ipc } = require('electron');
+var { ipcRenderer: ipc, remote } = require('electron');
+var fs = require('fs');
 
 class Settings {
     /**
@@ -10,6 +11,7 @@ class Settings {
         this.el = el;
         this.player = player;
         this.usable = false;
+        this.allActions = {pause:"Play / Pause",prev:"Previous song",next:"Next song",speed:"Switch timerate",repeat:"Switch repeating","vol+":"Increase volume","vol-":"Decrease volume",mute:"Mute volume"};
 
         this.switches = {
             discord: true,
@@ -17,26 +19,11 @@ class Settings {
             parallax: true
         };
 
-        this.shortcuts = [
-            {
-                keys: ["ctrl", "shift", "p"],
-                action: "pause"
-            },
-            {
-                keys: ["ctrl", "shift", "["],
-                action: "prev"
-            },
-            {
-                keys: ["ctrl", "shift", "]"],
-                action: "next"
-            },
-            {
-                keys: ["ctrl", "shift", "m"],
-                action: "mute"
-            }
-        ]
+        this.shortcuts = JSON.parse(
+            fs.readFileSync(`${remote.app.getPath("userData")}\\shortcuts.json`).toString()
+        );
 
-        this.saveShorcuts();
+        this.saveShortcuts();
     }
 
     /**
@@ -68,17 +55,33 @@ class Settings {
         }
     }
 
+    addShortcut(keys, action) {
+        this.shortcuts.push({
+            keys,
+            action
+        });
+        this.saveShortcuts();
+    }
+
+    deleteShortcut(i) {
+        this.shortcuts.splice(i, 1);
+        this.saveShortcuts();
+    }
+
     switchShortcuts() {
         this.usable = !this.usable;
     }
 
-    saveShorcuts() {
+    saveShortcuts() {
         ipc.send("shortcuts", this.shortcuts);
     }
 
     getActionName(id) {
-        let a = {pause:"Pause",prev:"Previous song",next:"Next song",speed:"Switch timerate",repeat:"Switch repeating","vol+":"Increase volume","vol-":"Decrease volume",mute:"Mute volume"};
-        return a[id] || "Unknown action";
+        return this.allActions[id] || "Unknown action";
+    }
+
+    getAllActions() {
+        return Object.keys(this.allActions).map(key => [key, this.allActions[key]]);
     }
 }
 

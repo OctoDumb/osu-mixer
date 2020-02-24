@@ -1,5 +1,6 @@
 var { remote } = require('electron'),
     username = require('username'),
+    keycoder = require('keycoder'),
     Database = require('./db'),
     Search = require('./search'),
     ProgressBar = require('./progressbar'),
@@ -189,6 +190,75 @@ var settings = new Vue({
     methods: {
         capitalize(text) {
             return text[0].toUpperCase() + text.slice(1);
+        },
+        deleteShortcut(i) {
+            this.settings.deleteShortcut(i);
+        }
+    }
+});
+
+var shortcutInput = new Vue({
+    el: "#shortcutInput",
+    data: {
+        ctrl: false,
+        alt: false,
+        shift: false,
+        keys: [],
+        reg: false,
+        act: "mute"
+    },
+    methods: {
+        /**
+         * @param {KeyboardEvent} event
+         */
+        input(event) {
+            event.preventDefault();
+            if(!this.reg) return;
+            console.log(event.key);
+            if(event.key == "Alt")
+                this.alt = true
+            else if(event.key == "Control")
+                this.ctrl = true;
+            else if(event.key == "Shift")
+                this.shift = true;
+            else {
+                let key = keycoder.eventToCharacter(event);
+                this.add(key.toUpperCase());
+            }
+        },
+        done() {
+            this.reg = false;
+        },
+        startReg() {
+            this.ctrl = this.alt = this.shift = false;
+            this.keys = [];
+            this.reg = true;
+        },
+        add(key) {
+            if(!this.keys.includes(key))
+                this.keys.push(key);
+        },
+        show() {
+            let keys = [];
+            if(this.ctrl) keys.push("Ctrl");
+            if(this.shift) keys.push("Shift");
+            if(this.alt) keys.push("Alt");
+            keys.push(...this.keys);
+            return keys.join("+");
+        },
+        getActions() {
+            return settings.settings.getAllActions();
+        },
+        newShortcut() {
+            let keys = [];
+            if(this.ctrl) keys.push("Ctrl");
+            if(this.shift) keys.push("Shift");
+            if(this.alt) keys.push("Alt");
+            keys.push(...this.keys);
+            this.$el.style.display = "none";
+            settings.settings.addShortcut(keys, this.act);
+            this.ctrl = this.alt = this.shift = false;
+            this.keys = [];
         }
     }
 });
@@ -341,5 +411,5 @@ if(
 }
 
 module.exports = {
-    db, audio, menu, playlist, player, visualizer, search, bar, background, Playlists, settings
+    db, audio, menu, playlist, player, visualizer, search, bar, background, Playlists, settings, shortcutInput
 };

@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "keycoder": "^1.1.1",
     "osudb": "^2.0.0",
     "sqlite3": "^4.1.1",
     "username": "^5.1.0"

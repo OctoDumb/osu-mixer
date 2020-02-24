@@ -124,7 +124,7 @@
                             <div v-for="(s, i) in settings.shortcuts" class="shortcut-settings-item">
                                 <div class="shortcut-settings-item-btns">{{ s.keys.map(k => capitalize(k)).join(" + ") }}</div>
                                 <div class="shortcut-settings-item-title">{{ settings.getActionName(s.action) }}</div>
-                                <i class="fas fa-trash"></i> 
+                                <i class="fas fa-trash" v-on:click="deleteShortcut(i)"></i>
                             </div>
                         </div>
                     </div>
@@ -138,12 +138,15 @@
 
 
 
-        <div class="shortcut-popup-container">
+        <div id="shortcutInput" class="shortcut-popup-container">
             <div class="shortcut-popup">
                 <i class="fa fa-times" aria-hidden="true" id="shortcut-popup-close"></i>
                 <h4>Lorem ipsum dolor sit.</h4>
-                <input type="text" class="shortcut-popup-text">
-                <button class="confirm-btn">Confirm</button>
+                <input type="text" class="shortcut-popup-text" :value="show()" v-on:keypress.prevent="() => true" v-on:keydown="input($event)" v-on:keyup="done()" v-on:focus="startReg()">
+                <select v-model="act">
+                    <option v-for="action in getActions()" v-bind:key="action[0]" :value="action[0]">{{ action[1] }}</option>
+                </select>
+                <button class="confirm-btn" v-on:click="newShortcut()">Confirm</button>
             </div>
         </div>
 
@@ -239,8 +242,6 @@
                 addShortcutBtn = document.querySelectorAll('#add-shortcut')[0],
                 mainMenuBtn = document.querySelectorAll('.main-menu-btn')[0];
 
-
-
             addShortcutBtn.addEventListener('mousedown', function () {
                 shortcutPopupContainer.style.display = 'flex';
             })
@@ -254,8 +255,6 @@
                     e.target.style.display = 'none';
                 }               
             })
-
-
 
             icon.addEventListener('mousedown', function (e) {
                 if (document.querySelectorAll('.song-list')[0].style.display == 'none') {
@@ -276,7 +275,6 @@
                 document.querySelectorAll('.song-list')[0].style.display = 'none';
                 visualizerContainer.style.bottom = '49px';
             })
-
 
             let MenuBtnAnimationReady = true;
 
@@ -314,7 +312,6 @@
                 }
             })
 
-
             let nav = document.querySelectorAll('.nav li');
             let menuItem = document.querySelectorAll('.main-menu-item');
             let menuContent = document.querySelectorAll('.main-menu-content')[0];
@@ -350,13 +347,6 @@
                 })             
             })
 
-            
-
-            
-            
-
-
-
             let checkbox = document.querySelectorAll('.checkbox'),
                 checkboxCheck = document.querySelectorAll('.fa-check');
 
@@ -369,10 +359,6 @@
                     }
                 })
             })
-            
-
-            
-            
         }
     </script>
 </html>

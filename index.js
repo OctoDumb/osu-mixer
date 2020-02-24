@@ -1,4 +1,5 @@
 var { app, BrowserWindow, globalShortcut, ipcMain: ipc } = require('electron');
+var fs = require('fs');
 
 /**
  * @type {BrowserWindow}
@@ -53,5 +54,6 @@ function registerShortcuts(shortcuts) {
 }
 
 ipc.on("shortcuts", (_ev, shortcuts) => {
+    fs.writeFileSync(`${app.getPath("userData")}\\shortcuts.json`, JSON.stringify(shortcuts));
     registerShortcuts(shortcuts);
 });
