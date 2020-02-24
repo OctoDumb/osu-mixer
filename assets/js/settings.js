@@ -19,9 +19,10 @@ class Settings {
             parallax: true
         };
 
-        this.shortcuts = JSON.parse(
-            fs.readFileSync(`${remote.app.getPath("userData")}\\shortcuts.json`).toString()
-        );
+        this.shortcuts = fs.existsSync(`${remote.app.getPath("userData")}\\shortcuts.json`) ? 
+            JSON.parse(
+                fs.readFileSync(`${remote.app.getPath("userData")}\\shortcuts.json`).toString()
+            ) : [];
 
         this.saveShortcuts();
     }
