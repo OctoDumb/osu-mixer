@@ -7,16 +7,18 @@
     "styles": "sass assets/css/main.scss:assets/css/main.css",
     "stylesRT": "sass assets/css/main.scss:assets/css/main.css --watch",
     "start": "electron .",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "build": "node build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^7.1.3",
     "osudb": "^2.0.0",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.1.1",
+    "username": "^5.1.0"
   },
   "devDependencies": {
+    "electron": "^7.1.3",
     "electron-builder": "^21.2.0"
   },
   "description": ""
