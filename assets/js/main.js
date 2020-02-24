@@ -285,7 +285,8 @@ if(
         let sgRegex = /^BeatmapDirectory = (?<dir>.+)$/gm;
         if(!sgRegex.test(cfg))
             return path + '/' + dir;
-        let dir = cfg.match(sgRegex).groups.dir;
+        let dir = cfg.match(sgRegex)[0].split(" = ")[1];
+        // let dir = cfg.match(sgRegex).groups.dir;
         if(dir.includes(":\\"))
             return dir.replace(/\\/g, '/');
         else
@@ -324,9 +325,11 @@ if(
 
         let hasDB = fs.existsSync(path + "/osu!.db"),
             hasSG = fs.existsSync(songs);
+
+        console.log(hasDB, hasSG);
         
-        if(!fs.exixtsSync(hasDB) || !fs.existsSync(hasSG)) {
-            pathInput.error = "Something went REALLY wrong!\nPlease, contant the developers!";
+        if(!hasDB || !hasSG) {
+            pathInput.error = "Something went REALLY wrong!<br>Please, contant the developers!";
             return;
         }
 
