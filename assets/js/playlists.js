@@ -78,9 +78,10 @@ class PlaylistManager {
     /**
      * 
      * @param {String} path 
+     * @param {String} songs
      * @param {Vue} vue
      */
-    async update(path, vue) {
+    async update(path, songs, vue) {
         let bgReg = /0,0,"(?<file>.*)"(,0,0)?/;
 
         console.log("Reading osu!.db");
@@ -106,7 +107,7 @@ class PlaylistManager {
             let bm = bms[i];
             // if(bm.beatmapSetId == -1 || bm.beatmapId == 0) continue; // Skip maps that are not uploaded (to avoid Vue errors)
 
-            let file = `${path}/Songs/${bm.beatmapFolder}/${bm.audioFilename}`;
+            let file = `${songs}/${bm.beatmapFolder}/${bm.audioFilename}`;
             let fExists = await exists(file); // Maybe async works better...
             if(!fExists) continue; // Skip maps that don't have audio
             if(delIds.includes(bm.beatmapId))
@@ -115,8 +116,8 @@ class PlaylistManager {
             if(sInDB.includes(bm.beatmapId)) continue; // Skip maps that already exists in database
 
             try {
-                let osu = fs.readFileSync(`${path}/Songs/${bm.beatmapFolder}/${bm.osuPath}`).toString();
-                let bg = bgReg.test(osu) ? `${path}/Songs/${bm.beatmapFolder}/${osu.match(bgReg).groups.file}` : '';
+                let osu = fs.readFileSync(`${songs}/${bm.beatmapFolder}/${bm.osuPath}`).toString();
+                let bg = bgReg.test(osu) ? `${songs}/${bm.beatmapFolder}/${osu.match(bgReg).groups.file}` : '';
                 this.db.run("INSERT INTO songs (id, artist, title, file, tags, source, creator, bg) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [
                     bm.beatmapId, bm.artist,
                     bm.title, file, bm.tags,

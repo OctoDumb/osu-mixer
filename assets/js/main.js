@@ -1,4 +1,5 @@
 var { remote } = require('electron'),
+    username = require('username'),
     Database = require('./db'),
     Search = require('./search'),
     ProgressBar = require('./progressbar'),
@@ -246,13 +247,13 @@ var background = new Parallax(document.getElementById("parallax"));
 
 var Playlists = new PlaylistManager(db, "playlists.json");
 
-async function load(path) {
+async function load(path, songs) {
     background.resize();
     visualizer.resize();
     console.log("Initializing manager");
     await Playlists.init();
     console.log("Updating database")
-    await Playlists.update(path, menu);
+    await Playlists.update(path, songs, menu);
     console.log("Loading finished");
     player.playlist = Playlists.songs;
     playlist.songs = Playlists.songs;
@@ -269,11 +270,28 @@ async function load(path) {
     });
 }
 
-if(fs.existsSync(`${remote.app.getPath("userData")}\\osupath.txt`)) {
+if(
+    fs.existsSync(`${remote.app.getPath("userData")}\\osupath.txt`) &&
+    fs.existsSync(`${remote.app.getPath("userData")}\\songspath.txt`)
+) {
     pathInput.$el.style.display = "none";
     let path = fs.readFileSync(`${remote.app.getPath("userData")}\\osupath.txt`);
-    load(path);
+    let songs = fs.readFileSync(`${remote.app.getPath("userData")}\\songspath.txt`);
+    load(path, songs);
 } else {
+
+    function getSongsFolder(path) {
+        let cfg = fs.readFileSync(path + `/osu!.${username.sync()}.cfg`).toString();
+        let sgRegex = /^BeatmapDirectory = (?<dir>.+)$/gm;
+        if(!sgRegex.test(cfg))
+            return path + '/' + dir;
+        let dir = cfg.match(sgRegex).groups.dir;
+        if(dir.includes(":\\"))
+            return dir.replace(/\\/g, '/');
+        else
+            return path + '/' + dir;
+    }
+
     document.querySelector(".path-btn").addEventListener("click", () => {
         let p = remote.dialog.showOpenDialogSync({
             title: 'Choose your osu! folder',
@@ -296,14 +314,26 @@ if(fs.existsSync(`${remote.app.getPath("userData")}\\osupath.txt`)) {
             pathInput.error = "This folder does not exist!";
             return;
         }
-        if(!fs.existsSync(path + "/osu!.db") || !fs.existsSync(path + "/Songs")) {
+        let cfg = path + `/osu!.${username.sync()}.cfg`;
+        if(!fs.existsSync(cfg)) {
             pathInput.error = "This is not your osu! folder!";
             return;
         }
 
-        fs.writeFileSync(`${remote.app.getPath("userData")}\\osupath.txt`, pathInput.path);
+        let songs = getSongsFolder(path);
+
+        let hasDB = fs.existsSync(path + "/osu!.db"),
+            hasSG = fs.existsSync(songs);
+        
+        if(!fs.exixtsSync(hasDB) || !fs.existsSync(hasSG)) {
+            pathInput.error = "Something went REALLY wrong!\nPlease, contant the developers!";
+            return;
+        }
+
+        fs.writeFileSync(`${remote.app.getPath("userData")}\\osupath.txt`, path);
+        fs.writeFileSync(`${remote.app.getPath("userData")}\\songspath.txt`, songs);
         pathInput.$el.style.display = "none";
-        load(pathInput.path);
+        load(path, songs);
     });
 }
 
